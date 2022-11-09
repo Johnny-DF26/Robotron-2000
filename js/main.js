@@ -1,6 +1,5 @@
-const controle = document.querySelectorAll('[data-controle]');
-const estat = document.querySelectorAll('[data-estatistica');
-
+const controles = document.querySelectorAll('[data-controle]');
+const estatisticas = document.querySelectorAll('[data-estatistica]');
 
 const pecas = {
    "bracos": {
@@ -36,29 +35,49 @@ const pecas = {
    }
 }
 
-controle.forEach((elemento) => {
-   elemento.addEventListener('click', (evento)=> {
+controles.forEach((elementos)=> {
+   elementos.addEventListener('click', (evento) =>{
       manipulaDados(evento.target.dataset.controle, evento.target.parentNode);
-      atualizaEstatistica(evento.target.dataset.peca);
-   })
+      atualizaEstatistica(evento.target.dataset.peca, evento.target.parentNode, evento.target.dataset.controle);
+   });
 });
 
-
 function manipulaDados(operacao, controle) {
-   const peca = controle.querySelector('[data-contador]')
-
+   const peca = controle.querySelector('[data-contador]');
+   // console.log(peca.value)
    if(operacao === '-') {
-      peca.value = parseInt(peca.value) - 1;
-   } else {
-      peca.value = parseInt(peca.value) + 1;
+      if (peca.value > 0 ){
+         peca.value = parseInt(peca.value) - 1;
+      }
+   } else if(peca.value < 12){
+      peca.value = parseInt(peca.value) + 1
    }
 }
 
-function atualizaEstatistica(peca) {
-   
-   estat.forEach((elementos)=> {
-      let parts = elementos.dataset.estatistica
-      console.log(elementos.dataset.estatistica);
-      elementos.textContent =  parseInt(elementos.textContent) + pecas[peca][parts];
+function atualizaEstatistica(peca, controlador, operacao) {
+   const  controle = controlador.querySelector('[data-contador]');
+   const titulo = document.querySelectorAll('.estatistica-titulo');
+   console.log(controle.value);
+
+   estatisticas.forEach((elementos)=> {
+
+      if (operacao === '-') { 
+         if(controle.value > 0) {
+            elementos.textContent = parseInt(elementos.textContent) - pecas[peca][elementos.dataset.estatistica];
+         }
+      } else if(operacao === '+') {
+         if(controle.value < 12) {
+            elementos.textContent = parseInt(elementos.textContent) + pecas[peca][elementos.dataset.estatistica];
+         }
+      }
+      if(parseInt(elementos.textContent) < 50) {
+         elementos.style.color = 'red';
+      } else {
+         elementos.style.color = 'blue';
+      }
    });
+}
+
+function trocaImagem(cor) {
+   document.querySelector('.robo').src = 'img/Robotron 2000 - '+cor+'/Robotron 2000 - '+cor+'.png';
 }
